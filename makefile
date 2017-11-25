@@ -4,7 +4,7 @@ MAJORVERSION = 2
 A = .a
 O = .o
 SO = .so
-E = 
+E =
 CC = cc
 I = include
 CFLAGS = -c -g -I$(I)
@@ -53,13 +53,14 @@ $(LIB_AR) : $(MODULES_OBJS) $(EXTRAS_OBJS)
 
 .PHONY : example
 example : $(EXAMPLES_BIN)
+$(EXAMPLES_BIN) : $(LIB_AR)
 
 .PHONY : thread
 thread : $(THREADS_EXAMPLES_BIN)
 $(THREADS_EXAMPLES_BIN) : $(THREADS_OBJS)
 
 # Linux-specific rule for building a shared library
-ifneq "$(MAKECMDGOAL)" "share"
+ifeq "$(MAKECMDGOALS)" "share"
 CFLAGS += -fPIC
 endif
 .PHONY : share
@@ -70,28 +71,45 @@ $(LIB_SHARE): $(MODULES_OBJS) $(EXTRAS_OBJS)
 %$(O) : %.c
 	$(CC) $(CFLAGS) -o $@ $<
 
-$(B)swtch$(O) : swtch.s; $(AS) -o $@ $<
+$(B)swtch$(O) : swtch.s
+	$(AS) -o $@ $<
 
-$(B)double$(E) : $(B)double$(O) $(LIB_AR); $(LD) $(LDFLAGS) -o $@ $^
-$(B)calc$(E) : $(B)calc$(O) $(LIB_AR); $(LD) $(LDFLAGS) -o $@ $^
-$(B)ids$(E) : $(B)ids$(O) $(LIB_AR); $(LD) $(LDFLAGS) -o $@ $^
-$(B)mpcalc$(E) : $(B)mpcalc$(O) $(LIB_AR); $(LD) $(LDFLAGS) -o $@ $^
-$(B)iref$(E) : $(B)iref$(O) $(LIB_AR); $(LD) $(LDFLAGS) -o $@ $^
-$(B)kref$(E) : $(B)kref$(O) $(LIB_AR); $(LD) $(LDFLAGS) -o $@ $^
-$(B)idents$(E) : $(B)idents$(O) $(LIB_AR); $(LD) $(LDFLAGS) -o $@ $^
-$(B)words$(E) : $(B)words$(O) $(LIB_AR); $(LD) $(LDFLAGS) -o $@ $^
-$(B)basename$(E) : $(B)basename$(O) $(LIB_AR); $(LD) $(LDFLAGS) -o $@ $^
-$(B)dirname$(E) : $(B)basename$(O) $(LIB_AR); $(LD) $(LDFLAGS) -o $@ $^
-$(B)wf$(E) : $(B)wf$(O) $(B)getword$(O) $(LIB_AR); $(LD) $(LDFLAGS) -o $@ $^
-$(B)xref$(E) : $(B)xref$(O) $(B)getword$(O) $(LIB_AR);$(LD) $(LDFLAGS) -o $@ $^
-$(B)cref$(E) : $(B)cref$(O) $(B)integer$(O) $(LIB_AR);$(LD) $(LDFLAGS) -o $@ $^
-$(B)sort$(E) : $(B)sort$(O) $(LIB_AR); $(LD) $(LDFLAGS) -o $@ $^
-$(B)spin$(E) : $(B)spin$(O) $(LIB_AR); $(LD) $(LDFLAGS) -o $@ $^
-$(B)sieve$(E) : $(B)sieve$(O) $(LIB_AR); $(LD) $(LDFLAGS) -o $@ $^
+$(B)double$(E) : $(B)double$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)calc$(E) : $(B)calc$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)ids$(E) : $(B)ids$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)mpcalc$(E) : $(B)mpcalc$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)iref$(E) : $(B)iref$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)kref$(E) : $(B)kref$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)idents$(E) : $(B)idents$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)words$(E) : $(B)words$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)basename$(E) : $(B)basename$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)dirname$(E) : $(B)basename$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)wf$(E) : $(B)wf$(O) $(B)getword$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)xref$(E) : $(B)xref$(O) $(B)getword$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)cref$(E) : $(B)cref$(O) $(B)integer$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)sort$(E) : $(B)sort$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)spin$(E) : $(B)spin$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
+$(B)sieve$(E) : $(B)sieve$(O)
+	$(LD) $(LDFLAGS) -o $@ $^
 
 .PHONY : tool
 tool : $(TOOL_BIN)
-$(TOOL_BIN) : maxalign.c
+$(TOOL_BIN) : $(TOOL).c
 	$(CC) -o $@ $<
 
 .PHONY : clean
