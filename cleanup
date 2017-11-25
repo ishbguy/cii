@@ -1,0 +1,5 @@
+#! /bin/sh
+
+# you run make distclean first
+# cleanup files gen by bootstrap
+rm -rf Makefile.in aclocal.m4 autom4te.cache/ build-aux/ config.h.in configure src/Makefile.in

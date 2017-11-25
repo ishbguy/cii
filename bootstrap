@@ -1,0 +1,4 @@
+#! /bin/sh
+
+# you need to prepare configure.ac and Makefile.am
+autoreconf --install
