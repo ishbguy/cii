@@ -67,3 +67,14 @@ vgcore*
 
 # build files
 build/*
+
+# autotools files
+*.in
+aclocal.m4
+build-aux/*
+autom4te.cache/*
+configure
+Makefile
+stamp-h1
+config.*
+src/.deps/*
