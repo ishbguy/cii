@@ -9,86 +9,44 @@ project(cii
     LANGUAGES C
     )
 
+# options
+option(WITH_THREAD "Build cii with thread support." OFF)
+option(USE_MEMCHK "Build cii use memchk instead of mem." OFF)
+
 # variables
-set(cii_sources
-    src/ap.c
-    src/arena.c
-    src/arith.c
-    src/array.c
-    src/assert.c
-    src/atom.c
-    src/bit.c
-    src/chan.c
-    src/except.c
-    src/fmt.c
-    src/list.c
-    src/memcmp.c
-    src/memmove.c
-    src/mp.c
-    src/ring.c
-    src/seq.c
-    src/set.c
-    src/stack.c
-    src/str.c
-    src/strerror.c
-    src/strncmp.c
-    src/swtch.s
-    src/table.c
-    src/text.c
-    src/xp.c
-    )
-set(cii_headers
-    include/ap.h
-    include/arena.h
-    include/arith.h
-    include/array.h
-    include/arrayrep.h
-    include/assert.h
-    include/atom.h
-    include/bit.h
-    include/chan.h
-    include/except.h
-    include/fmt.h
-    include/list.h
-    include/mem.h
-    include/mp.h
-    include/ring.h
-    include/sem.h
-    include/seq.h
-    include/set.h
-    include/stack.h
-    include/str.h
-    include/table.h
-    include/text.h
-    include/xp.h
-    )
-if(MAKE_THREAD)
+file(GLOB_RECURSE ${PROJECT_NAME}_sources CONFIGURE_DEPENDS src/*.c src/*.s)
+list(FILTER ${PROJECT_NAME}_sources EXCLUDE REGEX src/thread.*)
+list(FILTER ${PROJECT_NAME}_sources EXCLUDE REGEX "src/mem(chk)?\.c")
+file(GLOB_RECURSE ${PROJECT_NAME}_headers CONFIGURE_DEPENDS include/*.h)
+list(FILTER ${PROJECT_NAME}_headers EXCLUDE REGEX include/thread.*)
+if(WITH_THREAD)
     if(WIN32)
-        list(APPEND cii_sources src/thread-nt.c)
+        list(APPEND ${PROJECT_NAME}_sources src/thread-nt.c)
     else()
-        list(APPEND cii_sources src/thread.c)
+        list(APPEND ${PROJECT_NAME}_sources src/thread.c)
     endif()
-    list(APPEND cii_headers include/thread.h)
+    list(APPEND ${PROJECT_NAME}_headers include/thread.h)
 endif()
 
-if(MAKE_MEMCHK)
-    list(APPEND cii_sources src/memchk.c)
+if(USE_MEMCHK)
+    list(APPEND ${PROJECT_NAME}_sources src/memchk.c)
 else()
-    list(APPEND cii_sources src/mem.c)
+    list(APPEND ${PROJECT_NAME}_sources src/mem.c)
 endif()
 
 # compile flags
-# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-discarded-qualifiers")
 include_directories(include)
 set(CMAKE_INSTALL_PREFIX /usr)
-set(cii_install_lib_dir ${CMAKE_INSTALL_PREFIX}/lib)
-set(cii_install_include_dir ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
+set(${PROJECT_NAME}_install_lib_dir ${CMAKE_INSTALL_PREFIX}/lib)
+set(${PROJECT_NAME}_install_include_dir ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
 
 # targets and outputs
-add_library(${PROJECT_NAME} SHARED ${cii_sources})
+add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_sources})
 set_target_properties(${PROJECT_NAME} PROPERTIES
     INTERFACE_POSITION_INDEPENDENT_CODE ON
-    PUBLIC_HEADER "${cii_headers}"
+    SOVERSION ${PROJECT_VERSION}
+    PUBLIC_HEADER "${${PROJECT_NAME}_headers}"
     )
 configure_file(${PROJECT_NAME}.pc.in ${PROJECT_NAME}.pc @ONLY)
 
