@@ -69,7 +69,6 @@ vgcore*
 build/*
 
 # autotools files
-*.in
 aclocal.m4
 build-aux/*
 autom4te.cache/*
