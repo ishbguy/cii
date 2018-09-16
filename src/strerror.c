@@ -6,7 +6,7 @@ strerror is defined here because some vendors don't provide it.
 */
 char *strerror(int errnum) {
 	extern int sys_nerr;
-	extern char *sys_errlist[];
+	extern const char *const sys_errlist[];
 	static char null[1] = { 0 };
 
 	if (errnum <= 0)
