@@ -67,6 +67,7 @@ vgcore*
 
 # build files
 build/*
+compile_commands.json
 
 # autotools files
 aclocal.m4
