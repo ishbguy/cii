@@ -2,5 +2,5 @@ Name: @PROJECT_NAME@
 Description: @PROJECT_DESCRIPTION@
 Version: @PROJECT_VERSION@
 
-Libs: -L${${PROJECT_NAME}_install_lib_dir} -l@PROJECT_NAME@
+Libs: -L${${PROJECT_NAME}_install_library_dir} -l@PROJECT_NAME@
 Cflags: -I${${PROJECT_NAME}_install_include_dir}

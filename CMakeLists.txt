@@ -10,47 +10,27 @@ project(cii
     )
 
 # options
-option(WITH_THREAD "Build cii with thread support." OFF)
-option(USE_MEMCHK "Build cii use memchk instead of mem." OFF)
-option(BUILD_SHARED_LIBS "Build cii as a shared library." ON)
+option(BUILD_SHARED_LIBS "Build ${PROJECT_NAME} as a shared library." ON)
+option(WITH_THREAD "Build ${PROJECT_NAME} with thread support." OFF)
+option(USE_MEMCHK "Build ${PROJECT_NAME} use memchk instead of mem." OFF)
 
 # variables
-file(GLOB_RECURSE ${PROJECT_NAME}_sources CONFIGURE_DEPENDS src/*.c src/*.s)
-list(FILTER ${PROJECT_NAME}_sources EXCLUDE REGEX src/thread.*)
-list(FILTER ${PROJECT_NAME}_sources EXCLUDE REGEX "src/mem(chk)?\.c")
-list(APPEND ${PROJECT_NAME}_sources $<IF:$<BOOL:${USE_MEMCHK}>,src/memchk.c,src/mem.c>)
-file(GLOB_RECURSE ${PROJECT_NAME}_headers CONFIGURE_DEPENDS include/*.h)
-list(FILTER ${PROJECT_NAME}_headers EXCLUDE REGEX include/thread.*)
-if(WITH_THREAD)
-    list(APPEND ${PROJECT_NAME}_sources $<IF:$<BOOL:${WIN32}>,src/thread-nt.c,src/thread.c>)
-    list(APPEND ${PROJECT_NAME}_headers include/thread.h)
-endif()
+set(CMAKE_INSTALL_PREFIX /usr)
+set(${PROJECT_NAME}_install_library_dir ${CMAKE_INSTALL_PREFIX}/lib)
+set(${PROJECT_NAME}_install_include_dir ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
 
 # compile flags
 # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-discarded-qualifiers")
 include_directories(include)
-set(CMAKE_INSTALL_PREFIX /usr)
-set(${PROJECT_NAME}_install_lib_dir ${CMAKE_INSTALL_PREFIX}/lib)
-set(${PROJECT_NAME}_install_include_dir ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
 
-# targets and outputs
-add_library(${PROJECT_NAME}
-    ${${PROJECT_NAME}_sources}
-    ${${PROJECT_NAME}_headers}
-    )
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    INTERFACE_POSITION_INDEPENDENT_CODE ON
-    SOVERSION ${PROJECT_VERSION}
-    PUBLIC_HEADER "${${PROJECT_NAME}_headers}"
-    )
-configure_file(${PROJECT_NAME}.pc.in ${PROJECT_NAME}.pc)
+add_subdirectory(src)
 
 # installations
-install(TARGETS ${PROJECT_NAME}
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    PUBLIC_HEADER DESTINATION include/${PROJECT_NAME}
-    )
+configure_file(${PROJECT_NAME}.pc.in ${PROJECT_NAME}.pc)
 install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc
     DESTINATION lib/pkgconfig
+    )
+
+add_custom_target(uninstall
+    COMMAND xargs rm <${CMAKE_BINARY_DIR}/install_manifest.txt
     )
