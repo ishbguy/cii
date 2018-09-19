@@ -43,7 +43,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     SOVERSION ${PROJECT_VERSION}
     PUBLIC_HEADER "${${PROJECT_NAME}_headers}"
     )
-configure_file(${PROJECT_NAME}.pc.in ${PROJECT_NAME}.pc @ONLY)
+configure_file(${PROJECT_NAME}.pc.in ${PROJECT_NAME}.pc)
 
 # installations
 install(TARGETS ${PROJECT_NAME}

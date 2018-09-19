@@ -1,9 +1,6 @@
-libdir="@cii_install_lib_dir@"
-includedir="@cii_install_include_dir@"
-
 Name: @PROJECT_NAME@
 Description: @PROJECT_DESCRIPTION@
 Version: @PROJECT_VERSION@
 
-Libs: -L${libdir} -l@PROJECT_NAME@
-Cflags: -I${includedir}
+Libs: -L${${PROJECT_NAME}_install_lib_dir} -l@PROJECT_NAME@
+Cflags: -I${${PROJECT_NAME}_install_include_dir}
