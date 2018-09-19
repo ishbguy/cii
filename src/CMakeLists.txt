@@ -1,15 +1,20 @@
 # variables
 file(GLOB_RECURSE ${PROJECT_NAME}_sources CONFIGURE_DEPENDS *.c *.s)
-list(FILTER ${PROJECT_NAME}_sources EXCLUDE REGEX thread.*)
+list(FILTER ${PROJECT_NAME}_sources EXCLUDE REGEX "(thread|chan|switch).*")
 list(FILTER ${PROJECT_NAME}_sources EXCLUDE REGEX "mem(chk)?\.c")
 list(APPEND ${PROJECT_NAME}_sources $<IF:$<BOOL:${USE_MEMCHK}>,memchk.c,mem.c>)
 
 file(GLOB_RECURSE ${PROJECT_NAME}_headers CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/include/*.h)
-list(FILTER ${PROJECT_NAME}_headers EXCLUDE REGEX thread.*)
+list(FILTER ${PROJECT_NAME}_headers EXCLUDE REGEX "(thread|chan|switch).*")
 
 if(WITH_THREAD)
-    list(APPEND ${PROJECT_NAME}_sources $<IF:$<BOOL:${WIN32}>,thread-nt.c,thread.c>)
-    list(APPEND ${PROJECT_NAME}_headers ${CMAKE_SOURCE_DIR}/include/thread.h)
+    list(APPEND ${PROJECT_NAME}_sources
+        $<IF:$<BOOL:${WIN32}>,thread-nt.c,thread.c> chan.c switch.s
+        )
+    list(APPEND ${PROJECT_NAME}_headers
+        ${CMAKE_SOURCE_DIR}/include/thread.h
+        ${CMAKE_SOURCE_DIR}/include/chan.h
+        )
 endif()
 
 # targets and outputs

@@ -13,6 +13,8 @@ project(cii
 option(BUILD_SHARED_LIBS "Build ${PROJECT_NAME} as a shared library." ON)
 option(WITH_THREAD "Build ${PROJECT_NAME} with thread support." OFF)
 option(USE_MEMCHK "Build ${PROJECT_NAME} use memchk instead of mem." OFF)
+option(MAKE_EXAMPLE "Build ${PROJECT_NAME} examples." OFF)
+option(MAKE_MISC "Build ${PROJECT_NAME} misc executable." OFF)
 
 # variables
 set(CMAKE_INSTALL_PREFIX /usr)
@@ -24,6 +26,13 @@ set(${PROJECT_NAME}_install_include_dir ${CMAKE_INSTALL_PREFIX}/include/${PROJEC
 include_directories(include)
 
 add_subdirectory(src)
+
+if(${MAKE_EXAMPLE})
+    add_subdirectory(examples)
+endif()
+if(${MAKE_MISC})
+    add_subdirectory(misc)
+endif()
 
 # installations
 configure_file(${PROJECT_NAME}.pc.in ${PROJECT_NAME}.pc)
