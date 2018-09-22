@@ -40,6 +40,8 @@ install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc
     DESTINATION lib/pkgconfig
     )
 
-add_custom_target(uninstall
-    COMMAND xargs rm <${CMAKE_BINARY_DIR}/install_manifest.txt
-    )
+if(NOT "${WIN32}")
+    add_custom_target(uninstall
+        COMMAND xargs rm <${CMAKE_BINARY_DIR}/install_manifest.txt
+        )
+endif()
