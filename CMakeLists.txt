@@ -15,8 +15,10 @@ option(WITH_THREAD "Build ${PROJECT_NAME} with thread support." OFF)
 option(USE_MEMCHK "Build ${PROJECT_NAME} use memchk instead of mem." OFF)
 option(MAKE_EXAMPLE "Build ${PROJECT_NAME} examples." OFF)
 option(MAKE_MISC "Build ${PROJECT_NAME} misc executable." OFF)
+option(MAKE_TEST "Build ${PROJECT_NAME} tests" OFF)
 
 # variables
+# set(CMAKE_BUILD_TYPE "Release")
 set(CMAKE_INSTALL_PREFIX /usr)
 set(${PROJECT_NAME}_install_library_dir ${CMAKE_INSTALL_PREFIX}/lib)
 set(${PROJECT_NAME}_install_include_dir ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
@@ -27,6 +29,10 @@ include_directories(include)
 
 add_subdirectory(src)
 
+if(${MAKE_TEST})
+    enable_testing()
+    add_subdirectory(test)
+endif()
 if(${MAKE_EXAMPLE})
     add_subdirectory(examples)
 endif()
